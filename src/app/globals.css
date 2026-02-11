@@ -274,8 +274,8 @@ body {
   left: 5px;
   font: optional;
 
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px; /* Avoid too Big*/
 
   border: 2px solid #000;
   /*background: #ff5c5c; */
@@ -307,6 +307,58 @@ body {
 .window-line {
   margin: 0;
   font-size: 12px;
+}
+
+.window-h1 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #000;
+  padding-bottom: 4px;
+}
+
+.window-h2 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+}
+
+.window-h3 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.window-bullet {
+  font-size: 12px;
+  padding-left: 12px;
+  position: relative;
+}
+
+.window-bullet::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+}
+
+.window-bold {
+  font-weight: 1000;
+}
+
+.window-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 1px;
+}
+
+.window-bold-underline {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
 }
 
 .window-spacer {

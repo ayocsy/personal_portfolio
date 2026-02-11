@@ -19,12 +19,63 @@ type WindowProps = {
 function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, width, height}: WindowProps) {
     // console.log("Window props:", {windowType});
     const windowConfig = windowType ? WINDOW_CONTENT[windowType] : undefined;
+    function renderInline(text: string, keyPrefix: string) {
+        const parts = text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g).filter(Boolean);
+        return parts.map((part, idx) => {
+            if (part.startsWith("**") && part.endsWith("**")) {
+                const inner = part.slice(2, -2);
+                const underlineMatch = inner.match(/^__([^_]+)__$/);
+                if (underlineMatch) {
+                    // Underline
+                    return (
+                        <span className="window-bold-underline" key={`${keyPrefix}-bu-${idx}`}>
+                            {underlineMatch[1]}
+                        </span>
+                    );
+                }
+                return (
+                    // Bold
+                    <span className="window-bold" key={`${keyPrefix}-b-${idx}`}> 
+                        {renderInline(inner, `${keyPrefix}-b-${idx}`)}
+                    </span>
+                );
+            }
+            if (part.startsWith("__") && part.endsWith("__")) {
+                const inner = part.slice(2, -2);
+                return (
+                    <span className="window-underline" key={`${keyPrefix}-u-${idx}`}>
+                        {inner}
+                    </span>
+                );
+            }
+            return <span key={`${keyPrefix}-t-${idx}`}>{part}</span>;
+        });
+    }
+
+    function renderTextItem(text: string, index: number) {
+        // Make wording style
+        const trimmed = text.trim();
+        if (trimmed.length === 0) {
+            // return <div className="window-spacer" key={`spacer-${index}`} />;
+        }
+        if (trimmed.startsWith("### ")) {
+            return <div className="window-h3" key={`h3-${index}`}>{renderInline(trimmed.slice(4), `h3-${index}`)}</div>;
+        }
+        if (trimmed.startsWith("## ")) {
+            return <div className="window-h2" key={`h2-${index}`}>{renderInline(trimmed.slice(3), `h2-${index}`)}</div>;
+        }
+        if (trimmed.startsWith("# ")) {
+            return <div className="window-h1" key={`h1-${index}`}>{renderInline(trimmed.slice(2), `h1-${index}`)}</div>;
+        }
+        if (trimmed.startsWith("- ")) {
+            return <div className="window-bullet" key={`bullet-${index}`}>{renderInline(trimmed.slice(2), `bullet-${index}`)}</div>;
+        }
+        return <p className="window-line" key={`text-${index}`}>{renderInline(text, `text-${index}`)}</p>;
+    }
+
     function renderBodyItem(item: WindowBodyItem, index: number) {
         if (typeof item === "string") {
-            if (item.trim().length === 0) {
-                // return <div className="window-spacer" key={`spacer-${index}`} />;
-            }
-            return <p className="window-line" key={`text-${index}`}>{item}</p>;
+            return renderTextItem(item, index);
         }
         if (item.type === "image") {
             return (

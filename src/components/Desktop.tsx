@@ -179,7 +179,7 @@ function Desktop({reboot}: DesktopProps) {
     let diff = 15;
     if (desktopSize.width < 580) {
         docX = 70;
-        diff = 20;
+        diff = 25;
     }
     return ( 
     <div className="crt">
