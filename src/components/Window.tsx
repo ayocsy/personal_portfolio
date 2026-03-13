@@ -1,5 +1,4 @@
 "use client";
-import {useState, useEffect} from 'react';
 import { WINDOW_CONTENT, WindowBodyItem } from '@/data/windows';
 import FolderView from "@/components/FolderView";
 
@@ -56,7 +55,7 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
         // Make wording style
         const trimmed = text.trim();
         if (trimmed.length === 0) {
-            // return <div className="window-spacer" key={`spacer-${index}`} />;
+            return <div className="window-spacer" key={`spacer-${index}`} />;
         }
         if (trimmed.startsWith("### ")) {
             return <div className="window-h3" key={`h3-${index}`}>{renderInline(trimmed.slice(4), `h3-${index}`)}</div>;
@@ -133,7 +132,7 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
                 <div className="window-titlebar" onPointerDown={handlePointerDown}>
                     <button onClick={() => windowClose?.(windowId!)} className="window-close-button">
                     </button>
-                    {windowConfig?.title ?? "Projects"}
+                    <span className="window-title-text">{windowConfig?.title ?? "Projects"}</span>
                 </div>
                 
                 <div className="window-content folder-window">
@@ -145,7 +144,7 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
                 <div className="window-titlebar" onPointerDown={handlePointerDown}>
                     <button onClick={() => windowClose?.(windowId!)} className="window-close-button">
                     </button>
-                    {windowConfig.title}
+                    <span className="window-title-text">{windowConfig.title}</span>
                 </div>
                 
                 <div className="window-content">

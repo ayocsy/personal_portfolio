@@ -225,7 +225,6 @@ function Desktop({reboot}: DesktopProps) {
             />
             }
 
-            
             {windows.map((window) => (
                 <Window
                 key={window.id} 

@@ -12,7 +12,7 @@ const bootLines = [
   "Memory Test: 2048MB ......... OK",
   "CPU Check: Stable ........... OK",
   "",
-  "“A computer is like air conditioning – it becomes useless when you open Windows.”",
+  "“Given enough eyeballs, all bugs are shallow.”",
   "-- Linus Torvalds",
   "",
   ""

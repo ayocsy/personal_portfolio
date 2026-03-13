@@ -270,12 +270,12 @@ body {
 
 .window-close-button {
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 5px;
   font: optional;
 
-  width: 8px;
-  height: 8px; /* Avoid too Big*/
+  width: 11px;
+  height: 11px; /* Avoid too Big*/
 
   border: 2px solid #000;
   /*background: #ff5c5c; */
@@ -631,7 +631,7 @@ body {
   height: 100%;
   overflow: hidden;
 
-  animation: none;
+  animation: crt-flicker 3.2s steps(1, end) infinite;
 }
 
 .crt::before {
@@ -640,26 +640,38 @@ body {
   inset: 0;
   pointer-events: none;
 
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(119, 0, 0, 0.1),
-    rgba(255, 255, 255, 0.1) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.26) 0px,
+      rgba(255, 255, 255, 0.26) 1px,
+      rgba(0, 0, 0, 0.06) 1px,
+      rgba(0, 0, 0, 0.06) 3px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(0,0,0,0.03) 0px,
+      rgba(0,0,0,0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    );
 
-  opacity: 0.12;
+  opacity: 0.28;
   z-index: 10;
 }
 
 .crt * {
-  filter: brightness(0.95);
-  text-shadow:
-    0 0 1px rgba(0,255,0,0.25);
+  filter: brightness(0.93) contrast(1.02);
+  text-shadow: none;
 }
 
 @keyframes crt-flicker {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.99; }
+  0% { opacity: 1; }
+  4% { opacity: 0.985; }
+  11% { opacity: 1; }
+  12% { opacity: 0.992; }
+  33% { opacity: 1; }
+  52% { opacity: 0.988; }
+  70% { opacity: 1; }
   100% { opacity: 1; }
 }
