@@ -47,13 +47,15 @@ function Header(props: HeaderProps) {
 
     // Handle Menu Click
     function handleMenuClick(element: string) { 
-        if (!(element in currentActiveMenu)) {
+        console.log(`Clicked ${element} menu`);
+        if (!(element in currentActiveMenu)) { 
             return;
         }
         if (currentActiveMenu[element]) {
             // if the clicked menu is already active, close it
             setCurrentActiveMenu({...activeMenu});
         } else {
+            // console.log(`Opening ${element} menu`);
             const newActiveMenu: Record<string, boolean> = {...activeMenu};
             newActiveMenu[element] = true;
             setCurrentActiveMenu(newActiveMenu);
@@ -93,13 +95,17 @@ function Header(props: HeaderProps) {
             {Menu.map((item, index)=> (
                 <div key={item} className="dropdown">
                     <button onClick={() => handleMenuClick(item)} 
-                    className="menu-button" key={index}>{item}
+                    className="menu-button" key={index}>
+                        {item === "" ? (
+                            <img className="menu-logo" src="/assets/apple_logo.png" alt="Apple logo" />
+                        ) : item}
                     </button>
                     {currentActiveMenu[item] && (
                         <div className="dropdown-menu">
                             {Menuitems[item].map((subitem, subindex) => (
                                 <button className="dropdown-button" key={subindex}
                                 onClick={() => {
+                                    console.log(`Selected ${subitem.label} from ${item}`);
                                     subitem.onSelect();
                                     setCurrentActiveMenu({...activeMenu}); 
                                     // close menu after selection

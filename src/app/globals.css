@@ -137,8 +137,10 @@ body {
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  width: calc(100% + 4px);
+  margin: -2px -2px 0;
 
-  font-size: 15px;
+  font-size: 14px;
   height: 26px;
   /* font-size: clamp(11px, 1.4vw, 15px);
   height: clamp(22px, 3vh, 26px); */
@@ -150,8 +152,10 @@ body {
     linear-gradient(180deg, #f5f2f2 0%, #e2dede 100%);
   border-bottom: 2px solid #000;
   border-top: 1px solid #000;
+  border-radius: 10px 10px 0 0;
   position: relative;
-  z-index: 10000000;
+  z-index: 1000000;
+  /* overflow: hidden; */
 }
 
 .menu-left {
@@ -161,11 +165,24 @@ body {
 }
 
 .menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0 8px;
   cursor: pointer;
   height: 26px;
-  width: calc(auto - 1px); 
   color: var(--os-text-dark);
+}
+
+.menu-logo {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.menu-logo:hover {
+  content: url('/assets/apple_logo_white.png');
 }
 
 .menu-button:hover {
@@ -200,8 +217,7 @@ body {
   border: 2px solid #000;
   padding: 0;
   box-sizing: border-box;
-
-  box-shadow: 3px 3px 0 #00000066;
+  /* box-shadow: 3px 3px 0 #00000066; */
   z-index: 10000001;
 
 }
@@ -240,7 +256,7 @@ body {
   font-size: 12px;
   border: 2px solid #000;
   background: #bdbdbd;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+  /* box-shadow: 6px 6px 0 rgba(0,0,0,0.3); */
   word-spacing: 10%;
   position: absolute;
   overflow: hidden;
