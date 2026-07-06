@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gaster OS - Personal Portfolio
+
+A retro desktop-style personal portfolio built with Next.js, React, and TypeScript.
+
+Instead of a normal portfolio page, this project presents my work as a small operating-system inspired desktop. Visitors can boot into "Gaster OS", open files, explore project writeups, drag windows around, and use a classic menu bar inspired by early Macintosh/System 1 interfaces.
+
+## About The Project
+
+This portfolio was created as a university student project to showcase my software engineering work in a more interactive way. I wanted the site to feel like a small digital space rather than a static resume page.
+
+The app includes:
+
+- A boot screen with animated startup text
+- A desktop interface styled like an old-school operating system
+- Desktop icons for About Me, Projects, Bouldering, and hidden content
+- A top menu bar with project/system actions and external links
+- Draggable windows with close buttons
+- A Projects folder containing individual project files
+- Project writeups with text, images, and GitHub links
+- Responsive sizing so windows stay inside the desktop on smaller screens
+- Touch-friendly behavior for mobile users
+
+## Featured Projects
+
+The portfolio currently includes writeups for:
+
+- Personal Portfolio / Gaster OS
+- F1 Race ML Platform
+- FAANG Stock Data Analytics
+- Face Detection Client-Server System
+- UQ Mahjong Society Scoreboard
+- Visual Effect project
+- Society Landing Page
+
+It also includes a bouldering section, because climbing is a big part of how I think about problem solving: try, fail, adjust, and eventually send it.
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- chicago.css
+- CSS modules/global styling through `globals.css`
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the app in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build for production:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Start the production build:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run linting:
 
-## Deploy on Vercel
+```bash
+npm run lint
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+src/
+  app/
+    globals.css        Global styling, desktop theme, windows, icons, loading UI
+    layout.tsx         Root layout and metadata
+    page.tsx           Switches between boot screen and desktop
+
+  components/
+    Bootscreen.tsx     Startup screen before entering the desktop
+    Desktop.tsx        Main desktop state, icons, windows, sizing, restart logic
+    Header.tsx         Top menu bar, menu actions, time display
+    Icon.tsx           Desktop and folder icons
+    Window.tsx         Draggable window component and content renderer
+    FolderView.tsx     Projects folder grid
+    Loading.tsx        Startup loading window
+    Popup.tsx          Experimental popup component
+
+  data/
+    windows.ts         Portfolio content, project writeups, links, and folder files
+
+public/
+  assets/              Icons, images, screenshots, and portfolio media
+```
+
+## Main Features
+
+### Boot Flow
+
+The site starts with a fake terminal-style boot screen. After the boot text finishes, users can press any key or click to enter the desktop.
+
+### Desktop Interface
+
+The desktop is a contained OS-like screen with icons, a menu bar, window management, and retro visual styling. It uses React state to track open windows, prevent duplicate windows, and keep windows inside the visible desktop area.
+
+### Draggable Windows
+
+Each window can be dragged with pointer events, so it works with both mouse and touch input. Window positions are clamped to stay inside the desktop.
+
+### Project Folder
+
+The Projects folder opens into a grid of text-file icons. Each file opens a separate writeup from `src/data/windows.ts`, making it easy to add or edit portfolio content without changing the window rendering logic.
+
+### Custom Content Renderer
+
+Window content supports:
+
+- Headings
+- Bullet points
+- Bold and underline styling
+- Images
+- External links
+
+This lets each project page feel like a small document inside the desktop.
+
+## What I Learned
+
+Through this project, I practiced:
+
+- Structuring a React app with reusable components
+- Managing multiple pieces of UI state cleanly
+- Handling drag interactions with pointer events
+- Building responsive layouts with fixed visual constraints
+- Turning content data into reusable rendered UI
+- Designing a portfolio that feels personal instead of generic
+- Debugging layout details like window bounds, z-index, menu sizing, and mobile behavior
+
+## Future Improvements
+
+Some ideas I may add later:
+
+- More keyboard shortcuts
+- Better window focus and z-index ordering
+- Minimize/maximize behavior
+- More hidden files or Easter eggs
+- More polished mobile layout
+- Extra project writeups and live demo links
+
+## Author
+
+Gaster Chiang  
+Software Engineering student at The University of Queensland
+
+- GitHub: [ayocsy](https://github.com/ayocsy)
+- LinkedIn: [sheung-yan-chiang](https://www.linkedin.com/in/sheung-yan-chiang)
+- Instagram: [ayoclimb](https://www.instagram.com/ayoclimb/)
+

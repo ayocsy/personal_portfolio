@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 type MenuItem = {
     label: string;
@@ -17,7 +17,11 @@ type HeaderProps = {
     showHidden?: () => void;
 };
 
+const closedMenu: Record<string, boolean> = 
+{"": false, "File": false, "Edit": false, "Special": false};
+
 function Header(props: HeaderProps) {
+    const menuBarRef = useRef<HTMLDivElement>(null);
     // State variable to track if the menu button is clicked
     const [time, setTime] = useState(""); // State variable to hold the current time
 
@@ -40,10 +44,8 @@ function Header(props: HeaderProps) {
             { label: "Spotify",  onSelect: () => props.onOpenLink?.("https://open.spotify.com/user/31ox5zpqr5jsqbp3n2risoqgukce")} ],
     };
 
-    const activeMenu: Record<string, boolean> = 
-    {"": false, "File": false, "Edit": false, "Special": false};
     const Menu = ["", "File", "Edit", "Special"];
-    const [currentActiveMenu, setCurrentActiveMenu] = useState(activeMenu);
+    const [currentActiveMenu, setCurrentActiveMenu] = useState(closedMenu);
 
     // Handle Menu Click
     function handleMenuClick(element: string) { 
@@ -53,14 +55,25 @@ function Header(props: HeaderProps) {
         }
         if (currentActiveMenu[element]) {
             // if the clicked menu is already active, close it
-            setCurrentActiveMenu({...activeMenu});
+            setCurrentActiveMenu({...closedMenu});
         } else {
             // console.log(`Opening ${element} menu`);
-            const newActiveMenu: Record<string, boolean> = {...activeMenu};
+            const newActiveMenu: Record<string, boolean> = {...closedMenu};
             newActiveMenu[element] = true;
             setCurrentActiveMenu(newActiveMenu);
         }
     }
+
+    useEffect(() => {
+        function handleOutsideClick(event: PointerEvent) {
+            if (!menuBarRef.current?.contains(event.target as Node)) {
+                setCurrentActiveMenu({...closedMenu});
+            }
+        }
+
+        document.addEventListener("pointerdown", handleOutsideClick);
+        return () => document.removeEventListener("pointerdown", handleOutsideClick);
+    }, []);
 
     // the timer update function 
     useEffect(() => {
@@ -81,7 +94,7 @@ function Header(props: HeaderProps) {
 
     if (props.loading) {
         return (
-            <div className="menu-bar">
+            <div className="menu-bar" ref={menuBarRef}>
                 <div className="menu-left">
                 </div>
             </div>
@@ -89,7 +102,7 @@ function Header(props: HeaderProps) {
     }
 
     return (
-    <div className="menu-bar">
+    <div className="menu-bar" ref={menuBarRef}>
         {/* Menu items */}
         <div className="menu-left"> 
             {Menu.map((item, index)=> (
@@ -107,7 +120,7 @@ function Header(props: HeaderProps) {
                                 onClick={() => {
                                     console.log(`Selected ${subitem.label} from ${item}`);
                                     subitem.onSelect();
-                                    setCurrentActiveMenu({...activeMenu}); 
+                                    setCurrentActiveMenu({...closedMenu}); 
                                     // close menu after selection
                                 }
                             }>{subitem.label}</button>
