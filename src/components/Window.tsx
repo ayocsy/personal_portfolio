@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { WINDOW_CONTENT, WindowBodyItem } from '@/data/windows';
 import FolderView from "@/components/FolderView";
 
@@ -17,7 +18,51 @@ type WindowProps = {
 
 function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, width, height}: WindowProps) {
     // console.log("Window props:", {windowType});
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [hasOverflow, setHasOverflow] = useState(false);
+    const [scrollThumb, setScrollThumb] = useState({top: 16, height: 28});
     const windowConfig = windowType ? WINDOW_CONTENT[windowType] : undefined;
+
+    useEffect(() => {
+        const contentElement = contentRef.current;
+        if (!contentElement) return;
+        const observedContent: HTMLDivElement = contentElement;
+
+        function updateOverflow() {
+            const canScroll = observedContent.scrollHeight > observedContent.clientHeight;
+            setHasOverflow(canScroll);
+
+            if (!canScroll) {
+                setScrollThumb({top: 16, height: 28});
+                return;
+            }
+
+            const buttonSpace = 32;
+            const trackHeight = Math.max(28, observedContent.clientHeight - buttonSpace);
+            const thumbHeight = Math.max(28, Math.round((observedContent.clientHeight / observedContent.scrollHeight) * trackHeight));
+            const scrollRange = observedContent.scrollHeight - observedContent.clientHeight;
+            const thumbRange = Math.max(0, trackHeight - thumbHeight);
+            const thumbTop = 16 + Math.round((observedContent.scrollTop / scrollRange) * thumbRange);
+
+            setScrollThumb({top: thumbTop, height: thumbHeight});
+        }
+
+        updateOverflow();
+        const observer = new ResizeObserver(updateOverflow);
+        observer.observe(observedContent);
+        if (observedContent.firstElementChild) {
+            observer.observe(observedContent.firstElementChild);
+        }
+
+        window.addEventListener("resize", updateOverflow);
+        observedContent.addEventListener("scroll", updateOverflow);
+        return () => {
+            observer.disconnect();
+            observedContent.removeEventListener("scroll", updateOverflow);
+            window.removeEventListener("resize", updateOverflow);
+        };
+    }, [windowType, width, height, windowConfig]);
+
     function renderInline(text: string, keyPrefix: string) {
         const parts = text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g).filter(Boolean);
         return parts.map((part, idx) => {
@@ -126,7 +171,17 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
     }
     
     return (
-        <div className="window" style={{top: y, left: x, width, height}}>
+        <div className={`window${hasOverflow ? " window-has-overflow" : ""}`} style={{top: y, left: x, width, height}}>
+            {hasOverflow && (
+                <div className="window-classic-scrollbar" aria-hidden="true">
+                    <div className="window-classic-scrollbar-button window-classic-scrollbar-button-up" />
+                    <div
+                        className="window-classic-scrollbar-thumb"
+                        style={{top: scrollThumb.top, height: scrollThumb.height}}
+                    />
+                    <div className="window-classic-scrollbar-button window-classic-scrollbar-button-down" />
+                </div>
+            )}
             {windowType === "projects" ? (
                 <>
                 <div className="window-titlebar" onPointerDown={handlePointerDown}>
@@ -135,7 +190,7 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
                     <span className="window-title-text">{windowConfig?.title ?? "Projects"}</span>
                 </div>
                 
-                <div className="window-content folder-window">
+                <div className="window-content folder-window" ref={contentRef}>
                     <FolderView onOpenWindow={onOpenWindow} />
                 </div>
                 </>
@@ -147,7 +202,7 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
                     <span className="window-title-text">{windowConfig.title}</span>
                 </div>
                 
-                <div className="window-content">
+                <div className="window-content" ref={contentRef}>
                     <div className="window-content-body">
                         {windowConfig.body.map((item, index) => renderBodyItem(item, index))}
                     </div>

@@ -249,52 +249,90 @@ body {
 
 /* window frame */
 .window {
+  --titlebar-height: 18px;
+
   width: clamp(220px, 78vw, 360px);
   height: clamp(260px, 72vh, 620px);
+  min-width: 220px;
+  min-height: 180px;
+  max-width: calc(100% - 16px);
+  max-height: calc(100% - 16px);
   font-size: 12px;
-  border: 2px solid #000;
-  background: #bdbdbd;
+  border: 1px solid #000;
+  background: #f4f3ee;
   /* box-shadow: 6px 6px 0 rgba(0,0,0,0.3); */
   word-spacing: 10%;
   position: absolute;
   overflow: hidden;
+  resize: both;
 
   display: flex;
   flex-direction: column;
 }
 
+.window-has-overflow::after {
+  content: "";
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 13px;
+  height: 13px;
+  border-left: 1px solid #000;
+  border-top: 1px solid #000;
+  background:
+    repeating-conic-gradient(#cfcfcf 0 25%, #f7f7f2 0 50%) 0 0 / 4px 4px;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
 /* title area */
 .window-titlebar {
+  position: relative;
   flex-shrink: 0;
   cursor: move;
   user-select: none;
   touch-action: none;
-  height: 20px;
+  height: var(--titlebar-height);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  border-bottom: 2px solid #000;
-  background: #e6e6e6;
+  font-size: 12px;
+  border-bottom: 1px solid #000;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #111 0,
+      #111 1px,
+      #f2f2ee 1px,
+      #f2f2ee 3px
+    );
 
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
+.window-title-text {
+  background: #f4f3ee;
+  padding: 0 12px;
+  line-height: var(--titlebar-height);
+  z-index: 1;
+}
+
 .window-close-button {
   position: absolute;
-  top: 3px;
-  left: 5px;
+  top: 4px;
+  left: 6px;
   font: optional;
 
-  width: 11px;
-  height: 11px; /* Avoid too Big*/
+  width: 10px;
+  height: 10px; /* Avoid too Big*/
 
-  border: 2px solid #000;
-  /*background: #ff5c5c; */
+  border: 1px solid #000;
+  background: #f4f3ee;
 
   cursor: pointer;
+  z-index: 2;
 }
 
 .window-close-button:hover {
@@ -303,13 +341,133 @@ body {
 }
 
 .window-content {
-  flex: 1;
-  height: 100%;
-  padding: 8px 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: calc(100% - var(--titlebar-height));
+  padding: 12px 14px;
+  padding-right: 10px;
   color: #000;
-  overflow-y: auto; /* gives scrollbar */
-  background: #f1f1f1;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: #f7f7f2;
   position: relative;
+  scrollbar-gutter: stable;
+  scrollbar-color: #8f8f8f #f7f7f2;
+  scrollbar-width: auto;
+}
+
+/* Classic document scrollbar: this is the real scroll container for window body text. */
+.window-content::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.window-content::-webkit-scrollbar-track {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #f7f7f2 0,
+      #f7f7f2 3px,
+      #d9d9d2 3px,
+      #d9d9d2 4px
+    );
+  border-left: 1px solid #000;
+}
+
+.window-content::-webkit-scrollbar-thumb {
+  min-height: 28px;
+  background:
+    linear-gradient(90deg, #cfcfcf 0, #f5f5f0 50%, #a7a7a7 100%);
+  border: 1px solid #000;
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    inset -1px -1px 0 #777;
+}
+
+.window-content::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: #f7f7f2;
+  border-left: 1px solid #000;
+}
+
+.window-content::-webkit-scrollbar-button:vertical:decrement {
+  border-bottom: 1px solid #000;
+  background:
+    linear-gradient(135deg, transparent 45%, #000 45%, #000 55%, transparent 55%) center / 7px 7px no-repeat,
+    #f7f7f2;
+}
+
+.window-content::-webkit-scrollbar-button:vertical:increment {
+  border-top: 1px solid #000;
+  background:
+    linear-gradient(315deg, transparent 45%, #000 45%, #000 55%, transparent 55%) center / 7px 7px no-repeat,
+    #f7f7f2;
+}
+
+.window-content::-webkit-scrollbar-corner {
+  background:
+    repeating-conic-gradient(#cfcfcf 0 25%, #f7f7f2 0 50%) 0 0 / 4px 4px;
+  border-left: 1px solid #000;
+  border-top: 1px solid #000;
+}
+
+/* Visible classic scrollbar rail: mirrors the real content scroll for systems that auto-hide native scrollbars. */
+.window-classic-scrollbar {
+  position: absolute;
+  top: var(--titlebar-height);
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #f7f7f2 0,
+      #f7f7f2 3px,
+      #d9d9d2 3px,
+      #d9d9d2 4px
+    );
+  border-left: 1px solid #000;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.window-classic-scrollbar-button {
+  position: absolute;
+  left: 0;
+  width: 15px;
+  height: 16px;
+  background-color: #f7f7f2;
+}
+
+.window-classic-scrollbar-button-up {
+  top: 0;
+  border-bottom: 1px solid #000;
+  background:
+    linear-gradient(135deg, transparent 45%, #000 45%, #000 55%, transparent 55%) center / 7px 7px no-repeat,
+    #f7f7f2;
+}
+
+.window-classic-scrollbar-button-down {
+  bottom: 0;
+  border-top: 1px solid #000;
+  background:
+    linear-gradient(315deg, transparent 45%, #000 45%, #000 55%, transparent 55%) center / 7px 7px no-repeat,
+    #f7f7f2;
+}
+
+.window-classic-scrollbar-thumb {
+  position: absolute;
+  left: 2px;
+  width: 11px;
+  min-height: 28px;
+  background:
+    linear-gradient(90deg, #bcbcbc 0, #eeeeea 50%, #8e8e8e 100%);
+  border: 1px solid #000;
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    inset -1px -1px 0 #777;
 }
 
 .window-content-body {
@@ -556,9 +714,7 @@ body {
   height: 14px;
   border: 2px solid #000;
   background: #bdbdbd;
-  box-shadow:
-    inset 1px 1px 0 rgba(255,255,255,0.5),
-    inset -1px -1px 0 rgba(0,0,0,0.35);
+
   overflow: hidden;
 }
 
@@ -637,14 +793,14 @@ body {
 
 
 
-/* FUCKING CRT EFFECT*/
+/* CRT shell: keeps scanlines, flicker, and glow over the desktop without blocking clicks. */
 .crt {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
 
-  animation: crt-flicker 3.2s steps(1, end) infinite;
+  animation: crt-flicker 1.45s steps(1, end) infinite;
 }
 
 .crt::before {
@@ -653,38 +809,94 @@ body {
   inset: 0;
   pointer-events: none;
 
+  /* CRT scanlines: low-opacity horizontal phosphor lines plus faint vertical mask. */
   background:
     repeating-linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.26) 0px,
-      rgba(255, 255, 255, 0.26) 1px,
-      rgba(0, 0, 0, 0.06) 1px,
+      rgba(255, 255, 255, 0.18) 0px,
+      rgba(255, 255, 255, 0.18) 1px,
+      rgba(0, 0, 0, 0.08) 1px,
       rgba(0, 0, 0, 0.06) 3px
     ),
     repeating-linear-gradient(
       to right,
-      rgba(0,0,0,0.03) 0px,
-      rgba(0,0,0,0.03) 1px,
+      rgba(0,0,0,0.035) 0px,
+      rgba(0,0,0,0.035) 1px,
       transparent 1px,
       transparent 4px
     );
 
-  opacity: 0.28;
+  opacity: 0.24;
   z-index: 10;
+  animation:
+    crt-scanline-drift 7s linear infinite,
+    crt-overlay-flicker 1.2s steps(1, end) infinite;
+}
+
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* CRT flicker/noise: subtle brightness variation and phosphor glow. */
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 58%),
+    repeating-radial-gradient(circle at center, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
+  box-shadow:
+    inset 0 0 36px rgba(255,255,255,0.08),
+    inset 0 0 90px rgba(0,0,0,0.48);
+  opacity: 0.24;
+  z-index: 11;
+  animation: crt-noise-pulse 1.35s steps(2, end) infinite;
 }
 
 .crt * {
-  filter: brightness(0.93) contrast(1.02);
+  filter: brightness(0.93) contrast(1.06);
   text-shadow: none;
 }
 
 @keyframes crt-flicker {
   0% { opacity: 1; }
-  4% { opacity: 0.985; }
+  3% { opacity: 0.94; }
+  4% { opacity: 1; }
+  7% { opacity: 0.975; }
   11% { opacity: 1; }
-  12% { opacity: 0.992; }
+  12% { opacity: 0.955; }
+  13% { opacity: 1; }
+  31% { opacity: 0.985; }
   33% { opacity: 1; }
-  52% { opacity: 0.988; }
+  52% { opacity: 0.95; }
+  53% { opacity: 1; }
+  67% { opacity: 0.972; }
   70% { opacity: 1; }
+  88% { opacity: 0.965; }
+  90% { opacity: 1; }
   100% { opacity: 1; }
+}
+
+@keyframes crt-overlay-flicker {
+  0% { opacity: 0.24; }
+  8% { opacity: 0.31; }
+  9% { opacity: 0.2; }
+  10% { opacity: 0.27; }
+  46% { opacity: 0.22; }
+  47% { opacity: 0.33; }
+  50% { opacity: 0.24; }
+  78% { opacity: 0.3; }
+  80% { opacity: 0.21; }
+  100% { opacity: 0.24; }
+}
+
+@keyframes crt-scanline-drift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 0 6px, 4px 0; }
+}
+
+@keyframes crt-noise-pulse {
+  0% { opacity: 0.18; transform: translateY(0); }
+  25% { opacity: 0.28; transform: translateY(1px); }
+  50% { opacity: 0.2; transform: translateY(0); }
+  75% { opacity: 0.3; transform: translateY(-1px); }
+  100% { opacity: 0.22; transform: translateY(0); }
 }
