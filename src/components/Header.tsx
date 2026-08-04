@@ -15,6 +15,12 @@ type HeaderProps = {
     loading?: boolean;
     desktopSize: {width : number, height : number};
     showHidden?: () => void;
+    crtEnabled?: boolean;
+    musicEnabled?: boolean;
+    videoEnabled?: boolean;
+    onToggleCrt?: () => void;
+    onToggleMusic?: () => void;
+    onToggleVideo?: () => void;
 };
 
 const closedMenu: Record<string, boolean> = 
@@ -35,9 +41,11 @@ function Header(props: HeaderProps) {
             { label: "Show Hidden File",  onSelect: () => props.showHidden?.() }
         ],
         "Edit": [
-            { label: "Copy",  onSelect: () => document.execCommand?.("copy") }, 
-            { label: "Paste", onSelect: () => console.log("Paste (later)") },],
+            { label: `CRT Effect: ${props.crtEnabled === false ? "Off" : "On"}`, onSelect: () => props.onToggleCrt?.() },
+            { label: `Music: ${props.musicEnabled === false ? "Off" : "On"}`, onSelect: () => props.onToggleMusic?.() },
+            { label: `Video: ${props.videoEnabled === false ? "Off" : "On"}`, onSelect: () => props.onToggleVideo?.() },],
         "Special": [
+            { label: "Message Me", onSelect: () => props.onOpenWindow?.("contact") },
             { label: "LinkedIn", onSelect: () => props.onOpenLink?.("https://www.linkedin.com/in/sheung-yan-chiang") },
             { label: "GitHub",   onSelect: () => props.onOpenLink?.("https://github.com/ayocsy") },
             { label: "Instagram",onSelect: () => props.onOpenLink?.("https://www.instagram.com/ayoclimb/") },

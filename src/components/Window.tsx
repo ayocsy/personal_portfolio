@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { WINDOW_CONTENT, WindowBodyItem } from '@/data/windows';
 import FolderView from "@/components/FolderView";
+import ContactForm from "@/components/ContactForm";
 
 type WindowProps = {
     // Define any props needed for the Window component
@@ -14,9 +15,11 @@ type WindowProps = {
     onOpenWindow?: (windowType: string) => void;
     width?: number;
     height?: number;
+    zIndex?: number;
+    onActivate?: (windowId: number) => void;
 };
 
-function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, width, height}: WindowProps) {
+function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, width, height, zIndex, onActivate}: WindowProps) {
     // console.log("Window props:", {windowType});
     const contentRef = useRef<HTMLDivElement>(null);
     const [hasOverflow, setHasOverflow] = useState(false);
@@ -171,7 +174,15 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
     }
     
     return (
-        <div className={`window${hasOverflow ? " window-has-overflow" : ""}`} style={{top: y, left: x, width, height}}>
+        <div
+            className={`window${hasOverflow ? " window-has-overflow" : ""}`}
+            style={{top: y, left: x, width, height, zIndex}}
+            onPointerDownCapture={() => {
+                if (windowId !== undefined) {
+                    onActivate?.(windowId);
+                }
+            }}
+        >
             {hasOverflow && (
                 <div className="window-classic-scrollbar" aria-hidden="true">
                     <div className="window-classic-scrollbar-button window-classic-scrollbar-button-up" />
@@ -182,7 +193,22 @@ function Window({windowType, windowId, windowClose, x, y, onDrag, onOpenWindow, 
                     <div className="window-classic-scrollbar-button window-classic-scrollbar-button-down" />
                 </div>
             )}
-            {windowType === "projects" ? (
+            {windowType === "contact" ? (
+                <>
+                <div className="window-titlebar" onPointerDown={handlePointerDown}>
+                    <button
+                        onClick={() => windowClose?.(windowId!)}
+                        className="window-close-button"
+                        aria-label="Close message window"
+                    />
+                    <span className="window-title-text">Message Me</span>
+                </div>
+
+                <div className="window-content contact-window-content" ref={contentRef}>
+                    <ContactForm />
+                </div>
+                </>
+            ) : windowType === "projects" ? (
                 <>
                 <div className="window-titlebar" onPointerDown={handlePointerDown}>
                     <button onClick={() => windowClose?.(windowId!)} className="window-close-button">

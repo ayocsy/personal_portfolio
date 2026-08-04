@@ -11,9 +11,10 @@ type IconProps = {
     x: number;
     y: number;
     label?: string;
+    layout?: "absolute" | "grid";
 };
 
-function Icon({name, type, onDoubleClick, x, y, label}: IconProps) {
+function Icon({name, type, onDoubleClick, x, y, label, layout = "absolute"}: IconProps) {
     const [isCoarsePointer, setIsCoarsePointer] = useState(false);
 
     useEffect(() => {
@@ -29,9 +30,27 @@ function Icon({name, type, onDoubleClick, x, y, label}: IconProps) {
         return () => media.removeListener(update);
     }, []);
 
-    const styles = x !== 0 && y !== 0 
-    ? { top: `${y}%`, left: `${x}%`, position: "absolute" as const }
-    : {};
+    const styles = layout === "grid"
+        ? {
+            position: "relative" as const,
+            top: "auto",
+            left: "auto",
+            width: "100%",
+        }
+        : x !== 0 && y !== 0
+            ? {top: `${y}%`, left: `${x}%`, position: "absolute" as const}
+            : {};
+    const iconStyles = type === "message-icon"
+        ? {
+            width: "42px",
+            height: "42px",
+            marginBottom: "3px",
+            backgroundImage: "url('/assets/message-mac-transparent.png')",
+            backgroundPosition: "center",
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+        }
+        : undefined;
 
     return (
         <div
@@ -44,7 +63,7 @@ function Icon({name, type, onDoubleClick, x, y, label}: IconProps) {
                 }
             }}
         >
-            <div className={type}></div>
+            <div className={type} style={iconStyles}></div>
             {type === "text-icon" && (
                 <div className="icon-label">{label ?? `${name}.txt`}</div>
             )}
